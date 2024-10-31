@@ -1,0 +1,65 @@
+spring:
+  # Database Configuration
+  datasource:
+    url: jdbc:postgresql://localhost:1004/bank
+    username: postgres
+    password: 1004
+    driver-class-name: org.postgresql.Driver
+    # Connection Pool Configuration
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 300000
+      connection-timeout: 20000
+
+  # JPA Configuration
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+
+  sql:
+    init:
+      mode: always  # This will execute schema.sql on startup
+      platform: postgresql
+
+    session:
+      store-type: jdbc
+      jdbc:
+        initialize-schema: always  # This will create the session tables
+
+
+# Server Configuration
+server:
+  port: 8080
+
+---
+# Development Profile
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  datasource:
+    url: jdbc:postgresql://localhost:1004/bank_dev
+    username: postgres
+    password: 1004
+
+---
+# Production Profile
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:1004}/${DB_NAME:bank}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:1004}
+
+  jpa:
+    show-sql: false
