@@ -1,5 +1,7 @@
 package com.example.ebanking.mapper.users;
 
+import com.example.ebanking.DTO.auth.LoginResponseDTO;
+import com.example.ebanking.DTO.auth.RegisterRequestDTO;
 import com.example.ebanking.DTO.users.UserRequestDTO;
 import com.example.ebanking.DTO.users.UserResponseDTO;
 import com.example.ebanking.DTO.users.UserSummaryDTO;
@@ -11,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-11-03T15:04:14+0100",
+    date = "2024-11-03T16:14:19+0100",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 22.0.2 (Oracle Corporation)"
 )
 @Component
@@ -36,6 +38,42 @@ public class UserMapperImpl implements UserMapper {
         user.status( true );
 
         return user.build();
+    }
+
+    @Override
+    public User toEntity(RegisterRequestDTO dto) {
+        if ( dto == null ) {
+            return null;
+        }
+
+        User.UserBuilder user = User.builder();
+
+        user.username( dto.getUsername() );
+        user.password( dto.getPassword() );
+        user.email( dto.getEmail() );
+        user.firstName( dto.getFirstName() );
+        user.lastName( dto.getLastName() );
+        user.dateOfBirth( dto.getDateOfBirth() );
+
+        return user.build();
+    }
+
+    @Override
+    public LoginResponseDTO toLoginResponseDTO(User user) {
+        if ( user == null ) {
+            return null;
+        }
+
+        LoginResponseDTO.LoginResponseDTOBuilder loginResponseDTO = LoginResponseDTO.builder();
+
+        loginResponseDTO.id( user.getId() );
+        loginResponseDTO.username( user.getUsername() );
+        loginResponseDTO.email( user.getEmail() );
+        loginResponseDTO.firstName( user.getFirstName() );
+        loginResponseDTO.lastName( user.getLastName() );
+        loginResponseDTO.role( user.getRole() );
+
+        return loginResponseDTO.build();
     }
 
     @Override

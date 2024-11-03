@@ -1,30 +1,49 @@
 package com.example.ebanking.service.auth;
 
+import com.example.ebanking.DTO.auth.*;
 import com.example.ebanking.entity.User;
+import com.example.ebanking.mapper.users.UserMapper;
 import com.example.ebanking.repository.auth.AuthRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class Auth {
-    private AuthRepository authRepository;
+    private final AuthRepository authRepository;
+    private final UserMapper userMapper;
+    private final HttpSession session;
 
-    @Autowired
-    public Auth(AuthRepository authRepository) {
-        this.authRepository = authRepository;
+    @Transactional(readOnly = true)
+    public LoginResponseDTO login(LoginRequestDTO request) {
+        User user = authRepository.login(request.getEmail(), request.getPassword())
+                .orElseThrow(() -> new RuntimeException("Invalid credentials"));
+
+        LoginResponseDTO response = userMapper.toLoginResponseDTO(user);
+        session.setAttribute("user", response);
+        return response;
     }
 
-    public User login(String email , String password) {
-        return authRepository.login(email, password)
-                                    .orElseThrow(() -> new RuntimeException("Invalid credentials"));
-    }
+    @Transactional
+    public LoginResponseDTO register(RegisterRequestDTO request) {
+        // Check if user exists
+        authRepository.findByEmail(request.getEmail())
+                .ifPresent(user -> {
+                    throw new RuntimeException("User already exists");
+                });
 
-    public void register(User user) {
+        // Create new user
+        User user = userMapper.toEntity(request);
         authRepository.register(user);
+
+        return userMapper.toLoginResponseDTO(user);
     }
 
-    public User findByEmail(String email) {
-        return authRepository.findByEmail(email)
-                                    .orElseThrow(() -> new RuntimeException("User not found"));
+    @Transactional
+    public void logout() {
+        session.removeAttribute("user");
+        session.invalidate();
     }
 }

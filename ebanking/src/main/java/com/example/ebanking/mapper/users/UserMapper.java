@@ -1,5 +1,7 @@
 package com.example.ebanking.mapper.users;
 
+import com.example.ebanking.DTO.auth.LoginResponseDTO;
+import com.example.ebanking.DTO.auth.RegisterRequestDTO;
 import com.example.ebanking.DTO.users.*;
 import com.example.ebanking.entity.User;
 import com.example.ebanking.entity.enums.Role;
@@ -11,7 +13,9 @@ public interface UserMapper {
     @Mapping(target = "role", constant = "USER")
     @Mapping(target = "status", constant = "true")
     User toEntity(UserRequestDTO dto);
+    User toEntity(RegisterRequestDTO dto);
 
+    LoginResponseDTO toLoginResponseDTO(User user);
     UserResponseDTO toResponseDTO(User user);
 
     @Mapping(target = "fullName", expression = "java(user.getFirstName() + \" \" + user.getLastName())")
