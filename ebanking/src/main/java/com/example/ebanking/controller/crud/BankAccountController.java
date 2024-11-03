@@ -1,54 +1,72 @@
 package com.example.ebanking.controller.crud;
 
-import com.example.ebanking.entity.BankAccount;
-import com.example.ebanking.repository.crud.BanckAccountRepository;
+import com.example.ebanking.DTO.bankAccount.BankAccountRequestDTO;
+import com.example.ebanking.DTO.bankAccount.BankAccountResponseDTO;
 import com.example.ebanking.service.crud.BankAccountService;
 import jakarta.servlet.http.HttpSession;
-import org.hibernate.Session;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
+@RequestMapping("/api/account")
+@RequiredArgsConstructor
 public class BankAccountController {
+    private final BankAccountService bankAccountService;
 
-    private BankAccountService bankAccountService;
-
-    @Autowired
-    public BankAccountController(BankAccountService bankAccountService) {
-        this.bankAccountService = bankAccountService;
-    }
-
-    @PostMapping("/api/account/add")
-    public void createAccount(@RequestBody BankAccount account , HttpSession session) {
+    @PostMapping("/add")
+    public ResponseEntity<BankAccountResponseDTO> createAccount(
+            @Valid @RequestBody BankAccountRequestDTO request,
+            HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
-        account.setUserId(userId);
-        bankAccountService.createAccount(account);
+        if (userId == null) {
+            throw new RuntimeException("User not authenticated");
+        }
+        BankAccountResponseDTO response = bankAccountService.createAccount(request, userId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PutMapping("/api/account/update")
-    public void updateAccount(@RequestBody BankAccount account) {
-        bankAccountService.updateAccount(account);
-
+    @PutMapping("/{id}")
+    public ResponseEntity<BankAccountResponseDTO> updateAccount(
+            @PathVariable Long id,
+            @Valid @RequestBody BankAccountRequestDTO request) {
+        BankAccountResponseDTO response = bankAccountService.updateAccount(id, request);
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/account/delete")
-    public void deleteAccount() {
-        // TODO implement here
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteAccount(@PathVariable Long id) {
+        bankAccountService.deleteAccount(id);
+        return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/api/account/{id}")
-    public void getAccountById(@PathVariable String id) {
-        // TODO implement here
+    @GetMapping("/{id}")
+    public ResponseEntity<BankAccountResponseDTO> getAccountById(@PathVariable Long id) {
+        BankAccountResponseDTO response = bankAccountService.getAccountById(id);
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/account/account-number/{accountNumber}")
-    public void getAccountByAccountNumber(@PathVariable String accountNumber) {
-        // TODO implement here
+    @GetMapping("/account-number/{accountNumber}")
+    public ResponseEntity<BankAccountResponseDTO> getAccountByAccountNumber(
+            @PathVariable String accountNumber) {
+        BankAccountResponseDTO response = bankAccountService.getAccountByAccountNumber(accountNumber);
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/account/all")
-    public void getAllAccounts() {
-        // TODO implement here
+    @GetMapping("/all")
+    public ResponseEntity<List<BankAccountResponseDTO>> getAllAccounts() {
+        List<BankAccountResponseDTO> accounts = bankAccountService.getAllAccounts();
+        return ResponseEntity.ok(accounts);
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<BankAccountResponseDTO>> getAccountsByUserId(
+            @PathVariable Long userId) {
+        List<BankAccountResponseDTO> accounts = bankAccountService.getAccountsByUserId(userId);
+        return ResponseEntity.ok(accounts);
     }
 }
