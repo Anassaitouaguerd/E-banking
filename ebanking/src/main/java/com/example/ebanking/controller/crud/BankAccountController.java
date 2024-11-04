@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/account")
@@ -68,5 +69,11 @@ public class BankAccountController {
             @PathVariable Long userId) {
         List<BankAccountResponseDTO> accounts = bankAccountService.getAccountsByUserId(userId);
         return ResponseEntity.ok(accounts);
+    }
+
+    @GetMapping("/admin/changeStatus/{accountId}")
+    public ResponseEntity<?> changeStatus(@RequestParam String status, @PathVariable Long accountId) {
+        bankAccountService.changeStatus(accountId, Boolean.valueOf(String.valueOf(Objects.equals(status, "ACTIVE"))));
+        return ResponseEntity.ok().build();
     }
 }
