@@ -13,6 +13,10 @@ public interface UserMapper {
     @Mapping(target = "role", constant = "USER")
     @Mapping(target = "status", constant = "true")
     User toEntity(UserRequestDTO dto);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "role", constant = "USER")
+    @Mapping(target = "status", constant = "true")
     User toEntity(RegisterRequestDTO dto);
 
     LoginResponseDTO toLoginResponseDTO(User user);
