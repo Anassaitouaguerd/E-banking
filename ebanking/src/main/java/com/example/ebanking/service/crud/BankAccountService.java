@@ -22,12 +22,6 @@ public class BankAccountService {
     public BankAccountResponseDTO createAccount(BankAccountRequestDTO request, Long userId) {
         BankAccount bankAccount = bankAccountMapper.toEntity(request);
         bankAccount.setUserId(userId);
-
-        // You might want to add validation here
-        // - Check if account number is unique
-        // - Validate initial balance
-        // - Check user existence
-
         BankAccount savedAccount = bankAccountRepository.createAccount(bankAccount);
         return bankAccountMapper.toDTO(savedAccount);
     }
@@ -39,8 +33,6 @@ public class BankAccountService {
             throw new RuntimeException("Account not found");
         }
 
-        // Update only allowed fields
-        // Preserve sensitive data like userId
         BankAccount updatedAccount = bankAccountMapper.toEntity(request);
         updatedAccount.setId(id);
         updatedAccount.setUserId(existingAccount.getUser().getId());
@@ -55,11 +47,6 @@ public class BankAccountService {
         if (account == null) {
             throw new RuntimeException("Account not found");
         }
-
-        // You might want to add additional checks here
-        // - Check account balance
-        // - Check for pending transactions
-        // - Check user permissions
 
         bankAccountRepository.deleteAccount(bankAccountId);
     }
@@ -95,5 +82,16 @@ public class BankAccountService {
                 .filter(account -> account.getUser().getId().equals(userId))
                 .map(bankAccountMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void changeStatus(Long accountId, Boolean status) {
+        BankAccount account = bankAccountRepository.getAccountById(accountId);
+        if (account == null) {
+            throw new RuntimeException("Account not found");
+        }
+
+        account.setStatus(status);
+        bankAccountRepository.updateAccount(account);
     }
 }
