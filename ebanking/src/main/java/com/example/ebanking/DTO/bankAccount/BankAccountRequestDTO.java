@@ -26,7 +26,4 @@ public class BankAccountRequestDTO {
     @NotNull(message = "User ID is required")
     private Long userId;
 
-    @NotBlank(message = "Currency is required")
-    @Size(min = 3, max = 3, message = "Currency code must be 3 characters")
-    private String currency;
 }
