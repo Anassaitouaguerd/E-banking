@@ -1,20 +1,30 @@
 package com.example.ebanking.service.crud;
 
+import co.elastic.clients.elasticsearch.core.SearchResponse;
 import com.example.ebanking.DTO.users.*;
+import com.example.ebanking.document.UserDocument;
 import com.example.ebanking.entity.User;
+import com.example.ebanking.entity.enums.Role;
 import com.example.ebanking.mapper.users.UserMapper;
 import com.example.ebanking.repository.crud.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import co.elastic.clients.elasticsearch.core.search.Hit;
+import co.elastic.clients.elasticsearch.ElasticsearchClient;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final UserSearchService userSearchService;
+    private final ElasticsearchClient esClient;
 
     @Transactional
     public UserResponseDTO createUser(UserRequestDTO request) {
@@ -26,7 +36,8 @@ public class UserService {
         User user = userMapper.toEntity(request);
         user.setPassword(request.getPassword());
 
-        user = userRepository.save(user);
+        user = userRepository.save(userMapper.toEntity(request));
+        userSearchService.indexUser(user);
         return userMapper.toResponseDTO(user);
     }
 
@@ -44,6 +55,7 @@ public class UserService {
 
         userMapper.updateUserFromDTO(request, user);
         user = userRepository.update(user);
+        userSearchService.indexUser(user);
         return userMapper.toResponseDTO(user);
     }
 
@@ -92,13 +104,133 @@ public class UserService {
         userRepository.findById(id)
                       .orElseThrow(() -> new RuntimeException("User not found"));
         userRepository.delete(id);
+        userSearchService.deleteUser(id.toString());
     }
-
 
     @Transactional(readOnly = true)
     public UserSummaryDTO getUserSummary(Long id) {
         User user = userRepository.findById(id)
                                   .orElseThrow(() -> new RuntimeException("User not found"));
         return userMapper.toSummaryDTO(user);
+    }
+
+    public List<UserResponseDTO> searchUsers(String query) {
+        try {
+            SearchResponse<UserDocument> response = esClient.search(s -> s
+                            .index("users")
+                            .query(q -> q
+                                    .multiMatch(m -> m
+                                            .query(query)
+                                            .fields("username^2", "email^1.5", "firstName", "lastName", "fullName")
+                                    )
+                            ),
+                    UserDocument.class
+            );
+
+            return response.hits().hits().stream()
+                    .map(Hit::source)
+                    .map(doc -> UserResponseDTO.builder()
+                            .id(Long.parseLong(doc.getId()))
+                            .username(doc.getUsername())
+                            .email(doc.getEmail())
+                            .firstName(doc.getFirstName())
+                            .lastName(doc.getLastName())
+                            .status(doc.isStatus())
+                            .build())
+                    .collect(Collectors.toList());
+
+        } catch (IOException e) {
+            return new ArrayList<>();
+        }
+    }
+
+    public List<UserResponseDTO> advancedSearch(String query, String role, Boolean status,
+                                                int size) {
+        try {
+
+            // Build the search query
+            SearchResponse<UserDocument> response = esClient.search(s -> {
+                // Start with the basic search builder
+                var searchBuilder = s
+                        .index("users")
+                        .size(size);
+
+                // Build the query based on parameters
+                searchBuilder.query(q -> {
+                    var boolQuery = q.bool(b -> {
+                        // Add must clause for text search if query is not empty
+                        if (query != null && !query.trim().isEmpty()) {
+                            b.must(m -> m
+                                    .multiMatch(mm -> mm
+                                            .query(query)
+                                            .fields("username^2", "email^1.5", "firstName", "lastName", "fullName" , "role")
+                                    )
+                            );
+                        }
+
+                        // Add filter for role if specified
+                        if (role != null && !role.trim().isEmpty()) {
+                            b.filter(f -> f
+                                    .term(t -> t
+                                            .field("role")
+                                            .value(role)
+                                    )
+                            );
+                        }
+
+                        // Add filter for status if specified
+                        if (status != null) {
+                            b.filter(f -> f
+                                    .term(t -> t
+                                            .field("status")
+                                            .value(status)
+                                    )
+                            );
+                        }
+
+                        return b;
+                    });
+                    return boolQuery;
+                });
+
+                return searchBuilder;
+            }, UserDocument.class);
+
+            // Transform and return results
+            return response.hits().hits().stream()
+                    .map(hit -> {
+                        UserDocument doc = hit.source();
+                        try {
+                            return UserResponseDTO.builder()
+                                    .id(Long.parseLong(doc.getId()))
+                                    .username(doc.getUsername())
+                                    .email(doc.getEmail())
+                                    .firstName(doc.getFirstName())
+                                    .lastName(doc.getLastName())
+                                    .status(doc.isStatus())
+                                    .role(doc.getRole() != null ? Role.valueOf(doc.getRole()) : null)
+                                    .build();
+                        } catch (IllegalArgumentException e) {
+                            return UserResponseDTO.builder()
+                                    .id(Long.parseLong(doc.getId()))
+                                    .username(doc.getUsername())
+                                    .email(doc.getEmail())
+                                    .firstName(doc.getFirstName())
+                                    .lastName(doc.getLastName())
+                                    .status(doc.isStatus())
+                                    .role(null)
+                                    .build();
+                        }
+                    })
+                    .collect(Collectors.toList());
+
+        } catch (IOException e) {
+            return new ArrayList<>();
+        }
+    }
+    @Transactional(readOnly = true)
+    public void reindexAllUsers() {
+        List<User> users = userRepository.getAllUsers();
+        users.forEach(userSearchService::indexUser);
     }
 }
