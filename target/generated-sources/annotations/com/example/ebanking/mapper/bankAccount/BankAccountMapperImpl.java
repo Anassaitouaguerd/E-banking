@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-11-03T16:14:19+0100",
+    date = "2024-11-11T22:34:07+0100",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 22.0.2 (Oracle Corporation)"
 )
 @Component
@@ -27,7 +27,6 @@ public class BankAccountMapperImpl implements BankAccountMapper {
         bankAccount.accountNumber( dto.getAccountNumber() );
         bankAccount.balance( dto.getBalance() );
         bankAccount.accountType( dto.getAccountType() );
-        bankAccount.currency( dto.getCurrency() );
 
         return bankAccount.build();
     }
@@ -46,7 +45,6 @@ public class BankAccountMapperImpl implements BankAccountMapper {
         bankAccountResponseDTO.balance( entity.getBalance() );
         bankAccountResponseDTO.accountType( entity.getAccountType() );
         bankAccountResponseDTO.status( entity.isStatus() );
-        bankAccountResponseDTO.currency( entity.getCurrency() );
         bankAccountResponseDTO.createdAt( entity.getCreatedAt() );
 
         return bankAccountResponseDTO.build();
