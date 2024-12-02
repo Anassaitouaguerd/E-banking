@@ -32,6 +32,16 @@ spring:
       jdbc:
         initialize-schema: always  # This will create the session tables
 
+  elasticsearch:
+    uris: http://localhost:9200
+    connection-timeout: 5s
+    socket-timeout: 30s
+    restclient:
+      sniffer:
+        interval: 1m
+        delay-after-failure: 30s
+    username:
+    password:
 
 # Server Configuration
 server:
@@ -49,6 +59,9 @@ spring:
     username: postgres
     password: 1004
 
+  elasticsearch:
+    uris: http://localhost:9200
+
 ---
 # Production Profile
 spring:
@@ -63,3 +76,6 @@ spring:
 
   jpa:
     show-sql: false
+
+  elasticsearch:
+    uris: http://localhost:9200

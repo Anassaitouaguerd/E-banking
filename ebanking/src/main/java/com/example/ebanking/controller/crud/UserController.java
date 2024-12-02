@@ -22,6 +22,7 @@ public class UserController {
 
     @GetMapping("/all")
     public ResponseEntity<List<UserResponseDTO>> getUsers() {
+
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
@@ -66,5 +67,26 @@ public class UserController {
     @GetMapping("/{id}/summary")
     public ResponseEntity<UserSummaryDTO> getUserSummary(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getUserSummary(id));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<UserResponseDTO>> searchUsers(
+            @RequestParam(required = false, defaultValue = "") String query) {
+        return ResponseEntity.ok(userService.searchUsers(query));
+    }
+
+    @GetMapping("/search/advanced")
+    public ResponseEntity<List<UserResponseDTO>> advancedSearch(
+            @RequestParam(required = false, defaultValue = "") String query,
+            @RequestParam(required = false) String role,
+            @RequestParam(required = false) Boolean status,
+            @RequestParam(required = false, defaultValue = "10") int size) {
+        return ResponseEntity.ok(userService.advancedSearch(query, role, status, size));
+    }
+
+    @GetMapping("/reindexAllUsers")
+    public ResponseEntity<Void> reindexAllUsers() {
+        userService.reindexAllUsers();
+        return ResponseEntity.ok().build();
     }
 }

@@ -18,7 +18,6 @@ public class BankAccountResponseDTO {
     private BigDecimal balance;
     private AccountType accountType;
     private boolean status;
-    private String currency;
     private LocalDateTime createdAt;
     private Long userId;
 }
