@@ -73,7 +73,7 @@ public class UserService {
         User user = userRepository.findById(id)
                                   .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Verify current password
+        // Verify the current password
         if (request.getCurrentPassword().equals(user.getPassword())) {
             throw new RuntimeException("Current password is incorrect");
         }

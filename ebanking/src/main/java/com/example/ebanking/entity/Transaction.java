@@ -43,9 +43,6 @@ public class Transaction {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @Size(max = 255)
-    private String description;
-
     @PositiveOrZero(message = "Transaction fee must be positive or zero")
     private BigDecimal transactionFee;
 

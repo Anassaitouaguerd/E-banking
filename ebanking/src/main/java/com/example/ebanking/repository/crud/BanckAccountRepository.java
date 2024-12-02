@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class BanckAccountRepository {
@@ -76,4 +77,16 @@ public class BanckAccountRepository {
             throw new RuntimeException("Error getting accounts: " + e.getMessage(), e);
         }
     }
+
+    @Transactional
+    public Optional<BankAccount> getBankAccountByUserId(Long userId) {
+        try {
+            return Optional.of(entityManager.createQuery("SELECT b FROM BankAccount b WHERE b.user.id = :userId", BankAccount.class)
+                                .setParameter("userId", userId)
+                                .getSingleResult());
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+
 }
