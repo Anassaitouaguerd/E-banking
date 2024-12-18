@@ -24,6 +24,9 @@
 		<jjwt.version>0.11.5</jjwt.version>
 		<springdoc.version>2.3.0</springdoc.version>
 		<postgresql.version>42.7.2</postgresql.version>
+		<keycloak.version>24.0.1</keycloak.version>
+		<sonar.host.url>http://localhost:9000</sonar.host.url>
+		<sonar.login>squ_f0f082f34bc0dee1269cd62ef1507c500f258c02</sonar.login>
 	</properties>
 
 	<dependencies>
@@ -53,6 +56,21 @@
 			<artifactId>spring-boot-starter-hateoas</artifactId>
 		</dependency>
 
+		<!-- OAuth2 and Security -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.keycloak</groupId>
+			<artifactId>keycloak-spring-boot-starter</artifactId>
+			<version>${keycloak.version}</version>
+		</dependency>
+
 		<!-- Database -->
 		<dependency>
 			<groupId>org.postgresql</groupId>
@@ -72,7 +90,7 @@
 			<version>${elasticsearch.version}</version>
 		</dependency>
 
-		<!-- Security -->
+		<!-- JWT (keep for backward compatibility if needed) -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-api</artifactId>
@@ -124,6 +142,11 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -169,7 +192,11 @@
 					</compilerArgs>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.sonarsource.scanner.maven</groupId>
+				<artifactId>sonar-maven-plugin</artifactId>
+				<version>3.10.0.2594</version>
+			</plugin>
 		</plugins>
 	</build>
-
 </project>
