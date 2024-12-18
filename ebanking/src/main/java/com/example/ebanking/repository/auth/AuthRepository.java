@@ -54,4 +54,14 @@ public class AuthRepository {
             return Optional.empty();
         }
     }
+
+   public Optional<User> findByUsername(String username) {
+    try {
+        return Optional.ofNullable((User) entityManager.createQuery("SELECT u FROM User u WHERE username = :username")
+                .setParameter("username", username)
+                .getSingleResult());
+    } catch (Exception e) {
+        return Optional.empty();
+    }
+}
 }
