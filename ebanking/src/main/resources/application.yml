@@ -22,20 +22,70 @@ spring:
       hibernate:
         format_sql: true
 
+  # Security Configuration
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: ebanking-client
+            client-secret: your-client-secret-key
+            authorization-grant-type: authorization_code
+            scope:
+              - openid
+              - profile
+              - email
+              - roles
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8180/realms/ebanking
+            user-name-attribute: preferred_username
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8180/realms/ebanking
+          jwk-set-uri: http://localhost:8180/realms/ebanking/protocol/openid-connect/certs
+
+  # Session Configuration
   sql:
     init:
-      mode: always  # This will execute schema.sql on startup
+      mode: always
       platform: postgresql
 
-    session:
-      store-type: jdbc
-      jdbc:
-        initialize-schema: always  # This will create the session tables
+  session:
+    store-type: jdbc
+    jdbc:
+      initialize-schema: always
 
+  # Elasticsearch Configuration
+  elasticsearch:
+    uris: http://localhost:9200
+    connection-timeout: 5s
+    socket-timeout: 30s
+    restclient:
+      sniffer:
+        interval: 1m
+        delay-after-failure: 30s
+    username:
+    password:
 
 # Server Configuration
 server:
-  port: 8080
+  port: 8443
+  ssl:
+    enabled: true
+    key-store-type: PKCS12
+    key-store: classpath:keystore/ebanking.p12
+    key-store-password: anassanass
+    key-alias: ebanking
+
+# Keycloak Configuration
+keycloak:
+  realm: ebanking
+  auth-server-url: http://localhost:8180
+  ssl-required: external
+  resource: ebanking-client
+  public-client: true
+  principal-attribute: preferred_username
 
 ---
 # Development Profile
@@ -48,6 +98,13 @@ spring:
     url: jdbc:postgresql://localhost:1004/bank_dev
     username: postgres
     password: 1004
+
+  elasticsearch:
+    uris: http://localhost:9200
+
+# Development Keycloak settings
+keycloak:
+  auth-server-url: http://localhost:8180
 
 ---
 # Production Profile
@@ -63,3 +120,10 @@ spring:
 
   jpa:
     show-sql: false
+
+  elasticsearch:
+    uris: http://localhost:9200
+
+# Production Keycloak settings
+keycloak:
+  auth-server-url: ${KEYCLOAK_URL:http://localhost:8180}

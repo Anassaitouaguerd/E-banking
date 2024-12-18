@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class BankAccount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,7 +42,7 @@ public class BankAccount {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @NotBlank(message = "Currency is required")
-    @Size(min = 3, max = 3, message = "Currency code must be 3 characters")
-    private String currency;
+    public void setUserId(Long userId) {
+        this.user = User.builder().id(userId).build();
+    }
 }
