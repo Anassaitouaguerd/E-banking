@@ -58,6 +58,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user) {
+
         try{
             User userExists = auth.findByEmail(user.getEmail());
             if(userExists != null){
