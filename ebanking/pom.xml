@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.3.5</version>
+		<version>3.2.1</version>
 		<relativePath/>
 	</parent>
 
@@ -14,10 +14,15 @@
 	<artifactId>ebanking</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>ebanking</name>
-	<description>Demo project for Spring Boot</description>
+	<description>E-Banking Application</description>
 
 	<properties>
+		<!-- Java and Build Properties -->
 		<java.version>17</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+		<!-- Dependency Versions -->
 		<mapstruct.version>1.5.5.Final</mapstruct.version>
 		<lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
 		<elasticsearch.version>8.12.0</elasticsearch.version>
@@ -25,12 +30,21 @@
 		<springdoc.version>2.3.0</springdoc.version>
 		<postgresql.version>42.7.2</postgresql.version>
 		<keycloak.version>24.0.1</keycloak.version>
+
+		<!-- Plugin Versions -->
+		<maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+		<sonar-maven-plugin.version>3.10.0.2594</sonar-maven-plugin.version>
+
+		<!-- Test Dependency Versions -->
+		<mockito.version>5.10.0</mockito.version>
+
+		<!-- Sonar Properties -->
 		<sonar.host.url>http://localhost:9000</sonar.host.url>
 		<sonar.login>squ_f0f082f34bc0dee1269cd62ef1507c500f258c02</sonar.login>
 	</properties>
 
 	<dependencies>
-		<!-- Spring Boot Starters -->
+		<!-- Spring Boot Core Dependencies -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -56,7 +70,7 @@
 			<artifactId>spring-boot-starter-hateoas</artifactId>
 		</dependency>
 
-		<!-- OAuth2 and Security -->
+		<!-- Security and OAuth2 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-oauth2-client</artifactId>
@@ -81,16 +95,16 @@
 
 		<!-- Elasticsearch -->
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-elasticsearch</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>co.elastic.clients</groupId>
 			<artifactId>elasticsearch-java</artifactId>
 			<version>${elasticsearch.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+		</dependency>
 
-		<!-- JWT (keep for backward compatibility if needed) -->
+		<!-- JWT -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-api</artifactId>
@@ -116,20 +130,12 @@
 			<version>${springdoc.version}</version>
 		</dependency>
 
-		<!-- Development Tools -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<scope>runtime</scope>
-			<optional>true</optional>
-		</dependency>
+		<!-- Tools and Utilities -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
-
-		<!-- MapStruct -->
 		<dependency>
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct</artifactId>
@@ -147,10 +153,31 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>${mockito.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-junit-jupiter</artifactId>
+			<version>${mockito.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Development Tools -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+			<optional>true</optional>
+		</dependency>
 	</dependencies>
 
 	<build>
 		<plugins>
+			<!-- Spring Boot Maven Plugin -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -163,9 +190,12 @@
 					</excludes>
 				</configuration>
 			</plugin>
+
+			<!-- Compiler Plugin -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.version}</version>
 				<configuration>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
@@ -192,10 +222,12 @@
 					</compilerArgs>
 				</configuration>
 			</plugin>
+
+			<!-- Sonar Plugin -->
 			<plugin>
 				<groupId>org.sonarsource.scanner.maven</groupId>
 				<artifactId>sonar-maven-plugin</artifactId>
-				<version>3.10.0.2594</version>
+				<version>${sonar-maven-plugin.version}</version>
 			</plugin>
 		</plugins>
 	</build>

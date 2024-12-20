@@ -6,6 +6,8 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
+import java.sql.ConnectionBuilder;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -58,5 +60,4 @@ public class User {
 
     @Column(nullable = false)
     private boolean status;
-
 }
