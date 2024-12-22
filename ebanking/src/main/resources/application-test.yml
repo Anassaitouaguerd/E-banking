@@ -3,24 +3,15 @@ spring:
   main:
     allow-bean-definition-overriding: true
 
-  # PostgreSQL Configuration
-  datasource:
-    url: jdbc:postgresql://localhost:1004/bank
-    username: postgres
-    password: 1004
-    driver-class-name: org.postgresql.Driver
+  # Disable actual database connection for tests
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
+      - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+      - org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration
+      - org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration
 
-  jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-
-  # Existing Security Configuration
   security:
     oauth2:
       client:
@@ -32,12 +23,6 @@ spring:
         provider:
           keycloak:
             issuer-uri: http://localhost:8000
-
-  autoconfigure:
-    exclude:
-      - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
-      - org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration
-      - org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration
 
 keycloak:
   enabled: false
