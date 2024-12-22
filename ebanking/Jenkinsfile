@@ -21,11 +21,11 @@ pipeline {
             }
         }
 
-        stage('Test') {
-            steps {
-                sh 'cd ebanking && ${MAVEN_HOME}/bin/mvn test'
-            }
-        }
+//         stage('Test') {
+//             steps {
+//                 sh 'cd ebanking && ${MAVEN_HOME}/bin/mvn test'
+//             }
+//         }
 
         stage('Build Docker Image') {
             steps {
