@@ -14,7 +14,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Arrays;
@@ -30,13 +29,13 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("test")
 class UserServiceTest {
 
-    @MockBean
+    @Mock
     private UserRepository userRepository;
 
-    @MockBean
+    @Mock
     private UserMapper userMapper;
 
-    @MockBean
+    @Mock
     private UserSearchService userSearchService;
 
     @InjectMocks
