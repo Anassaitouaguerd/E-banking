@@ -6,45 +6,60 @@ pipeline {
         DOCKER_IMAGE = 'zli9a/e-banking'
         DOCKER_TAG = "v${BUILD_NUMBER}"
         DOCKER_CREDENTIALS = '262777'
+        EMAIL_RECIPIENT = 'sanalouafiart@gmail.com'
     }
 
     stages {
-        stage('Checkout Code') {
+        stage('Checkout') {
             steps {
-                git url: 'https://github.com/Anassaitouaguerd/E-banking.git', branch: 'main'
+                git(
+                    url: 'https://github.com/Anassaitouaguerd/E-banking.git',
+                    branch: 'main'
+                )
             }
         }
 
-        stage('Build') {
+        stage('Build Application') {
             steps {
-                sh 'cd ebanking && ${MAVEN_HOME}/bin/mvn clean package'
-            }
-        }
-
-        stage('Build Docker Image') {
-            steps {
-                script {
-
-                    sh """
-                        cd ebanking
-                        docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
-                        docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:latest
-                    """
+                dir('ebanking') {
+                    sh "${MAVEN_HOME}/bin/mvn clean package"
                 }
             }
         }
 
-        stage('Push to Docker Hub') {
+        stage('Docker Build') {
+            steps {
+                dir('ebanking') {
+                    script {
+                        // Build and tag Docker image
+                        docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
+                        sh "docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:latest"
+                    }
+                }
+            }
+        }
+
+        stage('Docker Push') {
             steps {
                 script {
-                    // Login to Docker Hub and push the image
-                    withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIALS}", passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                    withCredentials([
+                        usernamePassword(
+                            credentialsId: "${DOCKER_CREDENTIALS}",
+                            passwordVariable: 'DOCKER_PASSWORD',
+                            usernameVariable: 'DOCKER_USERNAME'
+                        )
+                    ]) {
+                        // Login to Docker Hub
+                        sh "echo '${DOCKER_PASSWORD}' | docker login -u '${DOCKER_USERNAME}' --password-stdin"
+
+                        // Push images
                         sh """
-                            echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
                             docker push ${DOCKER_IMAGE}:${DOCKER_TAG}
                             docker push ${DOCKER_IMAGE}:latest
-                            docker logout
                         """
+
+                        // Logout for security
+                        sh 'docker logout'
                     }
                 }
             }
@@ -53,24 +68,35 @@ pipeline {
 
     post {
         success {
-            mail to: 'sanalouafiart@gmail.com',
-                         subject: "Pipeline Success - E-Banking",
-                         body: "Jenkins pipeline completed successfully!"
+            emailext(
+                to: "${EMAIL_RECIPIENT}",
+                subject: "✅ Pipeline Success - E-Banking",
+                body: """
+                    Build Successful!
+                    Build Number: ${BUILD_NUMBER}
+                    Check console output at: ${BUILD_URL}
+                """.stripIndent()
+            )
         }
         failure {
-            mail to: 'sanalouafiart@gmail.com',
-                 subject: "Pipeline Failure - E-Banking",
-                 body: "Jenkins pipeline failed. Please check the logs."
-        }
-        failure {
-            echo 'Pipeline failed!'
+            emailext(
+                to: "${EMAIL_RECIPIENT}",
+                subject: "❌ Pipeline Failed - E-Banking",
+                body: """
+                    Build Failed!
+                    Build Number: ${BUILD_NUMBER}
+                    Check console output at: ${BUILD_URL}
+                """.stripIndent()
+            )
         }
         always {
-            // Clean up Docker images
-            sh """
-                docker rmi ${DOCKER_IMAGE}:${DOCKER_TAG}
-                docker rmi ${DOCKER_IMAGE}:latest
-            """
+            script {
+                // Clean up Docker images with error handling
+                sh """
+                    docker rmi ${DOCKER_IMAGE}:${DOCKER_TAG} || true
+                    docker rmi ${DOCKER_IMAGE}:latest || true
+                """
+            }
         }
     }
 }
