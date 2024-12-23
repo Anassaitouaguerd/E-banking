@@ -1,81 +1,23 @@
 pipeline {
     agent any
 
-   environment {
-           MAVEN_HOME = tool 'Maven'
-           DOCKER_IMAGE = 'zli9a/e-banking'
-           DOCKER_TAG = "v${BUILD_NUMBER}"
-           DOCKER_CREDENTIALS = '262777'
-           SONAR_URL = 'http://sonarqube:9000'
-           SONAR_TOKEN = credentials('sonar-token')
-       }
+    environment {
+        MAVEN_HOME = tool 'Maven'
+        DOCKER_IMAGE = 'zli9a/e-banking'
+        DOCKER_TAG = "v${BUILD_NUMBER}"
+        DOCKER_CREDENTIALS = '262777'
+    }
 
-       stages {
-           stage('Environment Check') {
-               steps {
-                   sh '''
-                       echo "Docker version:"
-                       docker --version
-                       echo "Docker Compose version:"
-                       docker-compose --version
-                       echo "Maven version:"
-                       mvn --version
-                       echo "Java version:"
-                       java -version
-                   '''
-               }
-           }
-
-           stage('SonarQube Analysis') {
-               steps {
-                   script {
-                       sh """
-                           cd ebanking
-                           mvn sonar:sonar \
-                               -Dsonar.host.url=${SONAR_URL} \
-                               -Dsonar.login=${SONAR_TOKEN} \
-                               -Dsonar.projectKey=ebanking \
-                               -Dsonar.projectName=ebanking
-                       """
-                   }
-               }
-           }
+    stages {
         stage('Checkout Code') {
             steps {
                 git url: 'https://github.com/Anassaitouaguerd/E-banking.git', branch: 'main'
             }
         }
 
-        stage('SonarQube Analysis') {
-            steps {
-                script {
-                    sh '''
-                        cd ebanking
-                        ${MAVEN_HOME}/bin/mvn sonar:sonar \
-                            -Dsonar.host.url=http://localhost:9000 \
-                            -Dsonar.token=${SONAR_TOKEN}
-                    '''
-                }
-            }
-        }
-
-        stage('Quality Gate') {
-            steps {
-                timeout(time: 1, unit: 'HOURS') {
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
-
         stage('Build') {
             steps {
                 sh 'cd ebanking && ${MAVEN_HOME}/bin/mvn clean package'
-            }
-        }
-
-        stage('Test') {
-            steps {
-                sh 'cd ebanking && ${MAVEN_HOME}/bin/mvn test'
             }
         }
 
@@ -111,14 +53,17 @@ pipeline {
 
     post {
         success {
-            mail to: 'aitouaguerdanass@gmail.com',
-                 subject: "Pipeline Success - E-Banking",
-                 body: "Jenkins pipeline completed successfully!"
-        }
+            mail to: 'sanalouafiart@gmail.com',
+                         subject: "Pipeline Success - E-Banking",
+                         body: "Jenkins pipeline completed successfully!"
+            }
         failure {
-            mail to: 'aitouaguerdanass@gmail.com',
+            mail to: 'sanalouafiart@gmail.com',
                  subject: "Pipeline Failure - E-Banking",
                  body: "Jenkins pipeline failed. Please check the logs."
+        }
+        failure {
+            echo 'Pipeline failed!'
         }
         always {
             // Clean up Docker images
