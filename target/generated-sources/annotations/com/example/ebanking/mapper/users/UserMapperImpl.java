@@ -1,11 +1,11 @@
 package com.example.ebanking.mapper.users;
 
-import com.example.ebanking.DTO.auth.LoginResponseDTO;
-import com.example.ebanking.DTO.auth.RegisterRequestDTO;
-import com.example.ebanking.DTO.users.UserRequestDTO;
-import com.example.ebanking.DTO.users.UserResponseDTO;
-import com.example.ebanking.DTO.users.UserSummaryDTO;
-import com.example.ebanking.DTO.users.UserUpdateDTO;
+import com.example.ebanking.dto.auth.LoginResponseDTO;
+import com.example.ebanking.dto.auth.RegisterRequestDTO;
+import com.example.ebanking.dto.users.UserRequestDTO;
+import com.example.ebanking.dto.users.UserResponseDTO;
+import com.example.ebanking.dto.users.UserSummaryDTO;
+import com.example.ebanking.dto.users.UserUpdateDTO;
 import com.example.ebanking.entity.User;
 import com.example.ebanking.entity.enums.Role;
 import javax.annotation.processing.Generated;

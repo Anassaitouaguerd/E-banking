@@ -40,7 +40,6 @@
 
 		<!-- Sonar Properties -->
 		<sonar.host.url>http://localhost:9000</sonar.host.url>
-		<sonar.token>squ_0f7c5bdfde726d6851811fb2865e1427d2ed48fa</sonar.token>
 	</properties>
 
 	<dependencies>

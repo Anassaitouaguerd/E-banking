@@ -1,7 +1,7 @@
 package com.example.ebanking.service.crud;
 
-import com.example.ebanking.DTO.bankAccount.BankAccountRequestDTO;
-import com.example.ebanking.DTO.bankAccount.BankAccountResponseDTO;
+import com.example.ebanking.dto.bankAccount.BankAccountRequestDTO;
+import com.example.ebanking.dto.bankAccount.BankAccountResponseDTO;
 import com.example.ebanking.entity.BankAccount;
 import com.example.ebanking.mapper.bankAccount.BankAccountMapper;
 import com.example.ebanking.repository.crud.BanckAccountRepository;

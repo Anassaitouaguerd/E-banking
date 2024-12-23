@@ -1,6 +1,6 @@
 package com.example.ebanking.service.auth;
 
-import com.example.ebanking.DTO.auth.*;
+import com.example.ebanking.dto.auth.*;
 import com.example.ebanking.entity.User;
 import com.example.ebanking.mapper.users.UserMapper;
 import com.example.ebanking.repository.auth.AuthRepository;
@@ -8,11 +8,9 @@ import com.example.ebanking.util.JwtUtil;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.logging.Logger;
 @Slf4j
 @Service
 @RequiredArgsConstructor

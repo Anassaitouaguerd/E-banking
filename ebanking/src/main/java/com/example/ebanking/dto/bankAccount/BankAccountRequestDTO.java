@@ -1,4 +1,4 @@
-package com.example.ebanking.DTO.bankAccount;
+package com.example.ebanking.dto.bankAccount;
 
 import com.example.ebanking.entity.enums.AccountType;
 import jakarta.validation.constraints.*;

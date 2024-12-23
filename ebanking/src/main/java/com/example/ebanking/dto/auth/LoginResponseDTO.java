@@ -1,5 +1,7 @@
-package com.example.ebanking.DTO.users;
+package com.example.ebanking.dto.auth;
 
+
+import com.example.ebanking.entity.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,9 +11,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserSummaryDTO {
+public class LoginResponseDTO {
     private Long id;
     private String username;
     private String email;
-    private String fullName;
+    private String firstName;
+    private String lastName;
+    private Role role;
 }

@@ -1,7 +1,7 @@
 package com.example.ebanking.mapper.bankAccount;
 
-import com.example.ebanking.DTO.bankAccount.BankAccountRequestDTO;
-import com.example.ebanking.DTO.bankAccount.BankAccountResponseDTO;
+import com.example.ebanking.dto.bankAccount.BankAccountRequestDTO;
+import com.example.ebanking.dto.bankAccount.BankAccountResponseDTO;
 import com.example.ebanking.entity.BankAccount;
 import com.example.ebanking.entity.User;
 import javax.annotation.processing.Generated;

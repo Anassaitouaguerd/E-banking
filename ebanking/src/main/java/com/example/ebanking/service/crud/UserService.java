@@ -1,7 +1,7 @@
 package com.example.ebanking.service.crud;
 
 import co.elastic.clients.elasticsearch.core.SearchResponse;
-import com.example.ebanking.DTO.users.*;
+import com.example.ebanking.dto.users.*;
 import com.example.ebanking.document.UserDocument;
 import com.example.ebanking.entity.User;
 import com.example.ebanking.entity.enums.Role;

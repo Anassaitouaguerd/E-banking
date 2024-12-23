@@ -1,4 +1,4 @@
-package com.example.ebanking.DTO.auth;
+package com.example.ebanking.dto.auth;
 
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;

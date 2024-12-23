@@ -1,7 +1,7 @@
 package com.example.ebanking.controller.crud;
 
-import com.example.ebanking.DTO.bankAccount.BankAccountRequestDTO;
-import com.example.ebanking.DTO.bankAccount.BankAccountResponseDTO;
+import com.example.ebanking.dto.bankAccount.BankAccountRequestDTO;
+import com.example.ebanking.dto.bankAccount.BankAccountResponseDTO;
 import com.example.ebanking.service.crud.BankAccountService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;

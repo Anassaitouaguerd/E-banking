@@ -1,4 +1,4 @@
-package com.example.ebanking.DTO.transactions.users;
+package com.example.ebanking.dto.transactions.users;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

@@ -1,8 +1,8 @@
 package com.example.ebanking;
 
-import com.example.ebanking.DTO.users.UserRequestDTO;
-import com.example.ebanking.DTO.users.UserResponseDTO;
-import com.example.ebanking.DTO.users.UserUpdateDTO;
+import com.example.ebanking.dto.users.UserRequestDTO;
+import com.example.ebanking.dto.users.UserResponseDTO;
+import com.example.ebanking.dto.users.UserUpdateDTO;
 import com.example.ebanking.entity.User;
 import com.example.ebanking.mapper.users.UserMapper;
 import com.example.ebanking.repository.crud.UserRepository;

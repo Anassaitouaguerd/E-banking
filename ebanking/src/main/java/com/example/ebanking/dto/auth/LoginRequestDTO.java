@@ -1,14 +1,11 @@
-package com.example.ebanking.DTO.auth;
+package com.example.ebanking.dto.auth;
 
 
-import com.example.ebanking.entity.enums.Role;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Data
 @Builder

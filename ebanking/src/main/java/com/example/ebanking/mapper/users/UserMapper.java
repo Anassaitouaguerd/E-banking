@@ -1,8 +1,8 @@
 package com.example.ebanking.mapper.users;
 
-import com.example.ebanking.DTO.auth.LoginResponseDTO;
-import com.example.ebanking.DTO.auth.RegisterRequestDTO;
-import com.example.ebanking.DTO.users.*;
+import com.example.ebanking.dto.auth.LoginResponseDTO;
+import com.example.ebanking.dto.auth.RegisterRequestDTO;
+import com.example.ebanking.dto.users.*;
 import com.example.ebanking.entity.User;
 import com.example.ebanking.entity.enums.Role;
 import org.mapstruct.*;

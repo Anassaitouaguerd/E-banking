@@ -1,4 +1,4 @@
-package com.example.ebanking.DTO.users;
+package com.example.ebanking.dto.users;
 
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;

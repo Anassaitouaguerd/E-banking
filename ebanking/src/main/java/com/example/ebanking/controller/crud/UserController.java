@@ -1,10 +1,10 @@
 package com.example.ebanking.controller.crud;
 
-import com.example.ebanking.DTO.users.UserPasswordUpdateDTO;
-import com.example.ebanking.DTO.users.UserRequestDTO;
-import com.example.ebanking.DTO.users.UserResponseDTO;
-import com.example.ebanking.DTO.users.UserUpdateDTO;
-import com.example.ebanking.DTO.users.*;
+import com.example.ebanking.dto.users.UserPasswordUpdateDTO;
+import com.example.ebanking.dto.users.UserRequestDTO;
+import com.example.ebanking.dto.users.UserResponseDTO;
+import com.example.ebanking.dto.users.UserUpdateDTO;
+import com.example.ebanking.dto.users.*;
 import com.example.ebanking.service.crud.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
