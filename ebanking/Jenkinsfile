@@ -56,7 +56,7 @@ pipeline {
             mail to: 'sanalouafiart@gmail.com',
                          subject: "Pipeline Success - E-Banking",
                          body: "Jenkins pipeline completed successfully!"
-            }
+        }
         failure {
             mail to: 'sanalouafiart@gmail.com',
                  subject: "Pipeline Failure - E-Banking",
