@@ -1,15 +1,45 @@
 pipeline {
     agent any
 
-    environment {
-        MAVEN_HOME = tool 'Maven'
-        DOCKER_IMAGE = 'zli9a/e-banking'
-        DOCKER_TAG = "v${BUILD_NUMBER}"
-        DOCKER_CREDENTIALS = '262777'
-        SONAR_TOKEN = credentials('sonar-token')
-    }
+   environment {
+           MAVEN_HOME = tool 'Maven'
+           DOCKER_IMAGE = 'zli9a/e-banking'
+           DOCKER_TAG = "v${BUILD_NUMBER}"
+           DOCKER_CREDENTIALS = '262777'
+           SONAR_URL = 'http://sonarqube:9000'
+           SONAR_TOKEN = credentials('sonar-token')
+       }
 
-    stages {
+       stages {
+           stage('Environment Check') {
+               steps {
+                   sh '''
+                       echo "Docker version:"
+                       docker --version
+                       echo "Docker Compose version:"
+                       docker-compose --version
+                       echo "Maven version:"
+                       mvn --version
+                       echo "Java version:"
+                       java -version
+                   '''
+               }
+           }
+
+           stage('SonarQube Analysis') {
+               steps {
+                   script {
+                       sh """
+                           cd ebanking
+                           mvn sonar:sonar \
+                               -Dsonar.host.url=${SONAR_URL} \
+                               -Dsonar.login=${SONAR_TOKEN} \
+                               -Dsonar.projectKey=ebanking \
+                               -Dsonar.projectName=ebanking
+                       """
+                   }
+               }
+           }
         stage('Checkout Code') {
             steps {
                 git url: 'https://github.com/Anassaitouaguerd/E-banking.git', branch: 'main'
@@ -52,7 +82,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Build the Docker image
+
                     sh """
                         cd ebanking
                         docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
